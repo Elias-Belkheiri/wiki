@@ -6,12 +6,14 @@ from . import util
 
 def index(request):
     return render(request, "encyclopedia/index.html", {
-        "entries": util.list_entries()
+        "entries": util.list_entries(),
+        "title": "encyclopedia"
     })
 
 def entry(request, title):
-    entry = util.get_entry(title)
-    if entry:
-        return HttpResponse(entry)
-    else:
-        return HttpResponse("Entry Not Found")
+    body = util.get_entry(title)
+    if body == None:
+        body = "Entry Not Found :("
+    return render(request, "encyclopedia/index.html", {
+    "body": body,
+    "title": title})
