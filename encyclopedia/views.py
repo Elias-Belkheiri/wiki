@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 
 from . import util
@@ -17,3 +17,18 @@ def entry(request, title):
     return render(request, "encyclopedia/index.html", {
     "body": body,
     "title": title})
+
+def search(request):
+    q = request.POST["q"]
+    entries = util.list_entries()
+    matched_entries = [e for e in entries if q in e]
+    if (q in matched_entries):
+        return redirect('entry', title=q)
+    if (matched_entries):
+        return render(request, "encyclopedia/index.html", {
+            "entries": matched_entries,
+            "title": "matched queries"
+        })
+    return render(request, "encyclopedia/index.html", {
+        "body": "Entry Not Found",
+        "title": matched_entries})
