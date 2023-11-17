@@ -32,3 +32,16 @@ def search(request):
     return render(request, "encyclopedia/index.html", {
         "body": "Entry Not Found",
         "title": matched_entries})
+
+def add(request):
+    if request.method == 'GET':
+        return render(request, "encyclopedia/form.html")
+    elif request.method == 'POST':
+        title = request.POST["title"]
+        content = request.POST["content"]
+        entries = util.list_entries()
+        matched_entries = [e for e in entries if e == title]
+        if (len(matched_entries) or len(title) == 0 or len(content) == 0):
+            return HttpResponse("Invalid Entry")
+        util.save_entry(title, content)
+        return redirect('entry', title=title)
